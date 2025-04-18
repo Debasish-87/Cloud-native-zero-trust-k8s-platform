@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/DarkRootX/Cloud-native-zero-trust-k8s-platform.git
+    repoURL: https://github.com/Debasish-87/Cloud-native-zero-trust-k8s-platform.git
     targetRevision: main
     path: manifests/kyverno-policies
   destination:
