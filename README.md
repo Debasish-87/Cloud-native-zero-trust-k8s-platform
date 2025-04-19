@@ -58,7 +58,9 @@ You can read the full architecture description [here](docs/architecture.md).
 
 ### 🧭 High-Level Pipeline
 
-![Zero Trust DevSecOps Pipeline](docs/zero-trust-pipeline.png)
+<p align="center">
+  <img src="docs/zero-trust-pipeline.png" alt="Zero Trust DevSecOps Pipeline" width="100%">
+</p>
 
 ---
 
