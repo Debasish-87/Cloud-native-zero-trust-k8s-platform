@@ -162,4 +162,3 @@ _Cloud Native | Kubernetes | DevSecOps Architect_
 
 ---
 
-Let me know if you want the logo, Shields.io badges, or GitHub Actions version instead of Jenkins!
