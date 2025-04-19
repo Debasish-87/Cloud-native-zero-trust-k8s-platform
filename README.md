@@ -1,205 +1,174 @@
-# 🔒 KubeGuard Lite - Cloud Native DevSecOps Pipeline for Kubernetes
 
-**KubeGuard Lite** is a lightweight yet powerful DevSecOps pipeline that ensures secure, policy-compliant, and production-ready Kubernetes deployments — from source to cluster.
+# 🔐 ZeroTrustOps: Cloud-Native DevSecOps Platform for Kubernetes
 
-> 🧠 Designed to be **minimal**, **modular**, and **legendary**.
-
----
-
-## ✨ Key Highlights
-
-- ✅ End-to-end CI/CD with Jenkins
-- 🔐 Static security scans (Trivy, Gitleaks, Kubeaudit)
-- 🛡️ Policy enforcement using Kyverno
-- 🚀 GitOps delivery using ArgoCD
-- 📁 Secure manifests (non-root, limited resources)
-- 📊 Visual-friendly scan reports (`/reports`)
-- 🧩 Easy to extend with Slack alerts or dashboards
+> **Lightweight but Legendary** — A streamlined DevSecOps pipeline to build, scan, and secure Kubernetes workloads with Zero Trust principles.
 
 ---
 
-## 📌 Workflow Architecture
+## 📦 Project Structure
 
-
-
-      Developer Commit
-           │
-           ▼
-     GitHub Repository
-           │
-           │ (Optionally: Pre-commit checks)
-           ▼
-     Jenkins CI/CD Pipeline
-           │
-           ├── Run Unit Tests (if any)
-           ├── Build Docker Image
-           ├── Push to Container Registry (e.g. DockerHub)
-           │
-           ├── Static Security Scans:
-           │     ├── Trivy (Image Vulnerabilities)
-           │     ├── Gitleaks (Secrets in Repo)
-           │     └── Kubeaudit (Manifest Misconfig)
-           │
-           ├── Store JSON/HTML scan reports in:
-           │     └── `/reports/{tool}`
-           │
-           ├── Optional:
-           │     ├── Notify via Slack/Discord (webhook)
-           │     └── Update Security Badge in README
-           │
-           ▼
-   GitOps Deployment via ArgoCD
-           │
-           ▼
-   Policy Validation via Kyverno
-           │
-           ├── Validates Secure Manifests
-           └── Rejects Insecure Deployments (e.g., root user, no limits)
-           ▼
-     Kubernetes Cluster
-           │
-           ├── Deploy Secure Microservice (dev namespace)
-           └── Trivy Operator (ongoing image scanning) 🔄 (optional)
-           ▼
-  Visual Dashboard (HTML or Web UI)
-           └── Reads scan reports from `/reports`
-           └── Optional trend visual for CVEs
-
-
-
-
-
----
-
-## 📂 Project Structure
-
-
-
+```bash
 Cloud-native-zero-trust-k8s-platform/
-├── Jenkinsfile                         # CI/CD pipeline with scan steps
-├── LICENSE
-├── README.md                           # Full project overview
-├── manifests/                          # All Kubernetes-related YAMLs
-│   ├── dev/
-│   │   ├── deployment.yaml             # App deployment
-│   │   └── service.yaml                # App service
-│   ├── argocd-apps/
-│   │   └── argocd-kyverno-policies.yaml  # ArgoCD Application definitions
-│   └── kyverno-policies/
-│       ├── bad-deployment.yaml        # Policy test: bad manifest
-│       └── disallow-latest-tag.yaml   # Kyverno policy: no latest tag
-├── pre-commit-hooks/                   # Optional linting / checks
-│   └── .pre-commit-config.yaml         # For linters, formatters
-├── reports/                            # Scan outputs
-│   ├── gitleaks/
-│   │   └── gitleaks-report.json        # Secrets scan report
-│   ├── kubeaudit/
-│   │   └── kubeaudit-report.json       # K8s misconfigurations
-│   └── trivy/
-│       ├── image-scan.json             # Image CVEs
-│       └── config-scan.json            # YAML misconfigs (optional)
-├── html-report/                        # Optional: pretty HTML dashboard
+├── Jenkinsfile                         # Jenkins CI/CD pipeline definition
+├── LICENSE                             # Open-source license
+├── README.md                           # This file!
+├── docs/                               # Documentation & architecture
+│   └── architecture.md
+├── html-report/                        # HTML Dashboard for scan reports
 │   ├── index.html
 │   └── assets/
 │       └── styles.css
-├── docs/                               # Optional: project diagrams, arch
-│   └── architecture.md
-├── scripts/                            # Automation scripts
-│   ├── run-trivy.sh
-│   ├── run-gitleaks.sh
-│   └── run-kubeaudit.sh
-└── .gitignore
-
-
-
-
-
-
-
----
-
-## 🚀 Quick Start
-
-1. **Clone the Repo**
-
-```bash
-git clone https://github.com/your-user/kubeguard-lite.git
-cd kubeguard-lite
-Set Up Jenkins + ArgoCD + Kyverno
-
-Use the provided Jenkinsfile in your Jenkins pipeline
-
-Install ArgoCD and Kyverno in your cluster
-
-Apply the manifests with kubectl apply -f manifests/
-
-Trigger Jenkins Build
-
-Jenkins will:
-
-Run static scans
-
-Save reports to /reports
-
-Push code to GitOps repo for ArgoCD to sync
-
-Kyverno enforces policies during admission
-
-🔐 Security Tools Used
-
-Tool	Purpose
-Trivy	Scan Docker images for OS & dependency CVEs
-Gitleaks	Detect secrets in Git history and files
-Kubeaudit	Audit YAML for insecure configurations
-Kyverno	Enforce best-practice policies (non-root, limits, etc.)
-💡 Unique Features
-📁 Scan Reports stored for review
-
-💬 Easily extendable: Add Slack/Discord alerts via Jenkins
-
-🖼️ Optional dashboard to visualize findings
-
-🛠️ Perfect base to build your own Zero Trust K8s pipeline!
-
-📈 Coming Soon (Ideas for Expansion 🚀)
-✅ Trivy Operator for live workload scans
-
-⚙️ OPA Gatekeeper support
-
-📊 HTML Dashboard from /reports
-
-🔔 Webhook integration for alerts
-
-🧠 Auto-policy suggestion based on scan findings
-
-☁️ GitHub Actions version of this pipeline
-
-🤝 Contributing
-Got ideas to improve this pipeline? Found a bug?
-Contributions are welcome! Fork it, make changes, and submit a PR.
-
-📜 License
-MIT License — do whatever you want, just give credit ❤️
-
-💬 Connect
-Made with 💻 + ☕ by [Your Name or Alias]
-Let’s secure the cloud — one commit at a time 🚀
-
-yaml
-Copy
-Edit
+├── manifests/                          # K8s manifests for app + policies
+│   ├── argocd-apps/
+│   │   └── argocd-kyverno-policies.yaml
+│   ├── dev/
+│   │   ├── deployment.yaml
+│   │   └── service.yaml
+│   └── kyverno-policies/
+│       ├── bad-deployment.yaml
+│       └── disallow-latest-tag.yaml
+├── pre-commit-hooks/                   # Hooks config (e.g., lint, secrets scan)
+├── reports/                            # Static scan reports
+│   ├── gitleaks/
+│   │   └── gitleaks-report.json
+│   ├── kubeaudit/
+│   │   └── kubeaudit-report.json
+│   └── trivy/
+│       ├── config-scan.json
+│       └── image-scan.json
+```
 
 ---
 
-Let me know if you want:
-- A **custom badge** section
-- A **clean HTML dashboard** to visualize `/reports`
-- Auto-gen README badge from scan status
-- Or a **SVG workflow image** version too 👨‍🎨
+## 🚀 What It Does
 
+✅ Git-based CI/CD with Jenkins  
+✅ Scans for vulnerabilities, secrets & misconfigurations  
+✅ GitOps deployment using ArgoCD  
+✅ Policy enforcement with Kyverno  
+✅ HTML dashboard for scan results  
+✅ Extensible pre-commit hook system  
+✅ Ready for Zero Trust Kubernetes environments  
 
+---
 
+## 🔁 Workflow Architecture
 
+![workflow](docs/architecture.md)
 
+### High-Level Pipeline
 
+```mermaid
+graph TD
+A[Developer Commit] --> B[GitHub Repo]
+B --> C[CI/CD (Jenkins)]
+C --> D[Static Scans: Trivy, Gitleaks, Kubeaudit]
+D --> E[Store Reports → html-report]
+E --> F[GitOps Deploy (ArgoCD)]
+F --> G[Policy Validation (Kyverno)]
+G --> H[Secure K8s Cluster]
+```
 
+---
+
+## 🔧 Security Tools Used
+
+| Tool         | Purpose                                |
+|--------------|----------------------------------------|
+| **Trivy**    | Scan Docker images & IaC for CVEs      |
+| **Gitleaks** | Detect hardcoded secrets in source     |
+| **Kubeaudit**| Identify insecure K8s configurations   |
+| **Kyverno**  | Enforce policies (e.g., block `latest`)|
+| **ArgoCD**   | GitOps-based deployment                |
+
+---
+
+## 📁 CI/CD: Jenkinsfile Overview
+
+Your pipeline performs:
+
+- Git change detection
+- Trivy version check
+- Gitleaks version check
+- Kubeaudit version check
+- Future-ready to add full scan + auto-alert stages
+
+---
+
+## 💻 HTML Report Dashboard
+
+📂 Path: `html-report/index.html`  
+View vulnerabilities, secrets, and misconfigs in one place.  
+Easily extend it with charts, summary counts, and filter logic.
+
+---
+
+## 🧪 Pre-Commit Hooks (optional)
+
+Add hooks in `pre-commit-hooks/.pre-commit-config.yaml` to automate:
+
+- Linting
+- Secret scans (Gitleaks)
+- K8s schema validation
+- Trivy config scan
+
+Use [`pre-commit`](https://pre-commit.com) to enforce these before pushing!
+
+---
+
+## 📜 Sample Kyverno Policies
+
+- ❌ Block use of `latest` image tags  
+- ❌ Prevent privilege escalation  
+- ✅ Ensure resource limits are defined  
+- 🔒 Secure labels/annotations for workloads  
+
+Defined in: `manifests/kyverno-policies/`
+
+---
+
+## 🛡 Future Enhancements (Project 2)
+
+- Runtime Threat Detection with Falco  
+- Istio Service Mesh with mTLS  
+- SOAR-based auto responses  
+- Prometheus + Grafana Monitoring  
+- EFK or Loki-based centralized logging  
+- Role-based dashboard & alerts to Teams/Slack  
+
+---
+
+## 📖 Documentation
+
+Full architecture breakdown in:  
+📄 [`docs/architecture.md`](docs/architecture.md)
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE)
+
+---
+
+## 🙌 Contributions
+
+Contributions, suggestions & PRs are welcome!  
+Let’s build a secure cloud-native future — one commit at a time 💪
+
+---
+
+## 🧠 Maintainer
+
+**Debasish | aka darkrootx**  
+_Cloud Native | Kubernetes | DevSecOps Architect_  
+📫 [GitHub](https://github.com/Debasish-87)
+
+---
+
+> “Trust nothing. Automate everything.” – ZeroTrustOps
+```
+
+---
+
+Let me know if you want the logo, Shields.io badges, or GitHub Actions version instead of Jenkins!
