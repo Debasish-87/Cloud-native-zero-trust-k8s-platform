@@ -1,0 +1,20 @@
+# === ZeroTrustOps DevSecOps Platform - Python Requirements ===
+# These Python packages support K8s manifest parsing, scan processing, reporting, and automation.
+
+# Kubernetes client to interact with the cluster if needed
+kubernetes>=26.1.0
+
+# YAML parser for manifests and Kyverno policies
+pyyaml>=6.0
+
+# JSON schema validation for scan reports (e.g., Trivy, Gitleaks)
+jsonschema>=4.21.0
+
+# Templating engine (for HTML report dashboard generation if dynamic)
+jinja2>=3.1.3
+
+# Pre-commit support to run hooks like gitleaks, kube-lint, trivy scan, etc.
+pre-commit>=3.6.0
+
+# Optional: Rich for better CLI formatting if you add CLI reporting tools/scripts later
+rich>=13.7.0
