@@ -8,7 +8,7 @@
 ## 📦 Project Structure
 
 ```bash
-Cloud-native-zero-trust-k8s-platform/
+ZeroTrustOps-Platform/
 ├── Jenkinsfile                         # Jenkins CI/CD pipeline definition
 ├── LICENSE                             # Open-source license
 ├── README.md                           # This file!
