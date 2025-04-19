@@ -54,20 +54,11 @@ Cloud-native-zero-trust-k8s-platform/
 
 ## 🔁 Workflow Architecture
 
-![workflow](docs/architecture.md)
+You can read the full architecture description [here](docs/architecture.md).
 
-### High-Level Pipeline
+### 🧭 High-Level Pipeline
 
-```mermaid
-graph TD
-A[Developer Commit] --> B[GitHub Repo]
-B --> C[CI/CD (Jenkins)]
-C --> D[Static Scans: Trivy, Gitleaks, Kubeaudit]
-D --> E[Store Reports → html-report]
-E --> F[GitOps Deploy (ArgoCD)]
-F --> G[Policy Validation (Kyverno)]
-G --> H[Secure K8s Cluster]
-```
+![Zero Trust DevSecOps Pipeline](docs/zero-trust-pipeline.png)
 
 ---
 
@@ -127,7 +118,7 @@ Defined in: `manifests/kyverno-policies/`
 
 ---
 
-## 🛡 Future Enhancements (Project 2)
+## 🛡 Future Enhancements 
 
 - Runtime Threat Detection with Falco  
 - Istio Service Mesh with mTLS  
