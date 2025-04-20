@@ -2,12 +2,14 @@ pipeline {
     agent any
 
     options {
-        skipDefaultCheckout(true) // We manually handle Git
+        skipDefaultCheckout(true)
     }
 
-    // triggers {
-    //     pollSCM('H/5 * * * *') // Optional: Check every 5 mins for Git changes
-    // }
+    environment {
+        TRIVY_IMAGE = "aquasec/trivy"
+        GITLEAKS_IMAGE = "zricethezav/gitleaks"
+        KUBEAUDIT_IMAGE = "shopify/kubeaudit"
+    }
 
     stages {
         stage('Clone Repo If Changed') {
@@ -33,7 +35,6 @@ pipeline {
                     }
 
                     if (repoChanged) {
-                        // Delete old contents before fresh checkout
                         deleteDir()
                         git branch: 'main', url: 'https://github.com/Debasish-87/ZeroTrustOps-Platform.git'
                         sh 'ls -la'
@@ -42,34 +43,60 @@ pipeline {
             }
         }
 
-        stage('Check Trivy Version') {
+        stage('Trivy Image Scan') {
+            steps {
+                echo '🐳 Running Trivy Image Scan...'
+                sh '''
+                    mkdir -p reports/trivy
+                    docker run --rm -v $(pwd):/root ${TRIVY_IMAGE} image --format json -o /root/reports/trivy/image-scan.json nginx:alpine
+                '''
+            }
+        }
+
+        stage('Trivy Config Scan') {
             steps {
                 echo '🔍 Checking Trivy version...'
                 sh 'docker run --rm aquasec/trivy --version'
+                echo '📄 Running Trivy Config (YAML/IaC) Scan...'
+                sh '''
+                    docker run --rm -v $(pwd):/root ${TRIVY_IMAGE} config --format json -o /root/reports/trivy/config-scan.json /root/manifests/dev
+                '''
             }
         }
 
-        stage('Check Gitleaks Version') {
+        stage('Gitleaks Secrets Scan') {
             steps {
                 echo '🔐 Checking Gitleaks version...'
                 sh 'docker run --rm zricethezav/gitleaks version'
+                echo '🔐 Running Gitleaks Scan...'
+                sh '''
+                    mkdir -p reports/gitleaks
+                    docker run --rm -v $(pwd):/path ${GITLEAKS_IMAGE} detect -s /path -f json -o /path/reports/gitleaks/gitleaks-report.json
+                '''
             }
         }
 
-        stage('Check Kubeaudit Version') {
+        stage('Kubeaudit Misconfig Scan') {
             steps {
                 echo '🛡️  Checking Kubeaudit version...'
                 sh 'docker run --rm shopify/kubeaudit version'
+                echo '🛡️  Running Kubeaudit Scan...'
+                sh '''
+                    mkdir -p reports/kubeaudit
+                    docker run --rm -v $(pwd)/manifests/dev:/manifests ${KUBEAUDIT_IMAGE} all -f /manifests/deployment.yaml -f /manifests/service.yaml --format json > reports/kubeaudit/kubeaudit-report.json
+                '''
             }
         }
     }
 
     post {
         always {
-            echo '✅ Pipeline complete.'
+            echo '✅ All scans complete. Reports saved in reports/ directory.'
         }
     }
 }
+
+
 
 
 
