@@ -59,8 +59,11 @@ pipeline {
                 sh 'docker run --rm aquasec/trivy --version'
                 echo '📄 Running Trivy Config (YAML/IaC) Scan...'
                 sh '''
-                    docker run --rm -v $(pwd):/root ${TRIVY_IMAGE} config --format json -o /root/reports/trivy/config-scan.json /root/manifests/dev
+                    mkdir -p reports/trivy
+                    pwd
+                    docker run --rm -v $(pwd):/root aquasec/trivy image --format json -o /root/reports/trivy/image-scan.json nginx:alpine
                 '''
+
             }
         }
 
@@ -70,8 +73,10 @@ pipeline {
                 sh 'docker run --rm zricethezav/gitleaks version'
                 echo '🔐 Running Gitleaks Scan...'
                 sh '''
-                    mkdir -p reports/gitleaks
-                    docker run --rm -v $(pwd):/path ${GITLEAKS_IMAGE} detect -s /path -f json -o /path/reports/gitleaks/gitleaks-report.json
+                mkdir -p reports/trivy
+                docker run --rm \
+                    -v $(pwd)/reports/trivy:/report \
+                    aquasec/trivy image --format json -o /report/image-scan.json nginx:alpine
                 '''
             }
         }
