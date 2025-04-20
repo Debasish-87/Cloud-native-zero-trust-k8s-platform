@@ -35,7 +35,7 @@ pipeline {
                     if (repoChanged) {
                         // Delete old contents before fresh checkout
                         deleteDir()
-                        git branch: 'main', url: 'https://github.com/Debasish-87/Cloud-native-zero-trust-k8s-platform.git'
+                        git branch: 'main', url: 'https://github.com/Debasish-87/ZeroTrustOps-Platform.git'
                         sh 'ls -la'
                     }
                 }
