@@ -12,6 +12,7 @@ pipeline {
     }
 
     stages {
+
         stage('Clone Repo If Changed') {
             steps {
                 script {
@@ -48,47 +49,54 @@ pipeline {
                 echo '🐳 Running Trivy Image Scan...'
                 sh '''
                     mkdir -p reports/trivy
-                    docker run --rm -v $(pwd):/root ${TRIVY_IMAGE} image --format json -o /root/reports/trivy/image-scan.json nginx:alpine
+                    docker run --rm \
+                        -v $(pwd)/reports/trivy:/report \
+                        ${TRIVY_IMAGE} image \
+                        --format json -o /report/image-scan.json nginx:alpine
                 '''
             }
         }
 
         stage('Trivy Config Scan') {
             steps {
-                echo '🔍 Checking Trivy version...'
-                sh 'docker run --rm aquasec/trivy --version'
-                echo '📄 Running Trivy Config (YAML/IaC) Scan...'
+                echo '📄 Running Trivy Config (IaC/YAML) Scan...'
                 sh '''
                     mkdir -p reports/trivy
-                    pwd
-                    docker run --rm -v $(pwd):/root aquasec/trivy image --format json -o /root/reports/trivy/image-scan.json nginx:alpine
+                    docker run --rm \
+                        -v $(pwd):/root \
+                        ${TRIVY_IMAGE} config \
+                        --format json -o /root/reports/trivy/config-scan.json /root/manifests
                 '''
-
             }
         }
 
         stage('Gitleaks Secrets Scan') {
             steps {
-                echo '🔐 Checking Gitleaks version...'
-                sh 'docker run --rm zricethezav/gitleaks version'
-                echo '🔐 Running Gitleaks Scan...'
+                echo '🔐 Running Gitleaks Secrets Scan...'
                 sh '''
-                mkdir -p reports/trivy
-                docker run --rm \
-                    -v $(pwd)/reports/trivy:/report \
-                    aquasec/trivy image --format json -o /report/image-scan.json nginx:alpine
+                    mkdir -p reports/gitleaks
+                    docker run --rm \
+                        -v $(pwd):/repo \
+                        -v $(pwd)/reports/gitleaks:/report \
+                        ${GITLEAKS_IMAGE} detect \
+                        --source=/repo \
+                        --report-format=json \
+                        --report-path=/report/gitleaks-report.json
                 '''
             }
         }
 
         stage('Kubeaudit Misconfig Scan') {
             steps {
-                echo '🛡️  Checking Kubeaudit version...'
-                sh 'docker run --rm shopify/kubeaudit version'
-                echo '🛡️  Running Kubeaudit Scan...'
+                echo '🛡️  Running Kubeaudit Misconfiguration Scan...'
                 sh '''
                     mkdir -p reports/kubeaudit
-                    docker run --rm -v $(pwd)/manifests/dev:/manifests ${KUBEAUDIT_IMAGE} all -f /manifests/deployment.yaml -f /manifests/service.yaml --format json > reports/kubeaudit/kubeaudit-report.json
+                    docker run --rm \
+                        -v $(pwd)/manifests/dev:/manifests \
+                        ${KUBEAUDIT_IMAGE} all \
+                        -f /manifests/deployment.yaml \
+                        -f /manifests/service.yaml \
+                        --format json > reports/kubeaudit/kubeaudit-report.json
                 '''
             }
         }
@@ -100,15 +108,3 @@ pipeline {
         }
     }
 }
-
-
-
-
-
-
-
-
-// kubectl port-forward svc/argocd-server -n argocd 8080:443  -- argoCD running
-
-// kubectl port-forward svc/demo-app 9090:80 -n dev  -- pod running
-
