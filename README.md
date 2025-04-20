@@ -1,5 +1,5 @@
 
-# 🔐 ZeroTrustOps: Cloud-Native DevSecOps Platform for Kubernetes
+# 🔐 ZeroTrustOps: Cloud-Native Secure Kubernetes DevSecOps Platform 
 
 > **Lightweight but Legendary** — A streamlined DevSecOps pipeline to build, scan, and secure Kubernetes workloads with Zero Trust principles.
 
